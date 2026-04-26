@@ -1,32 +1,21 @@
 # Importações
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 def result_calculate(size, lights, device):
-    """Calcula o consumo estimado com base na área, número de luminárias e aparelhos.
-
-    Args:
-        size (int): Tamanho (área) da residência
-        lights (int): Quantidade de luminárias
-        device (int): Quantidade de aparelhos
-
-    Returns:
-        float: Consumo estimado
-    """
-    # Coeficientes usados no cálculo do consumo de energia
+    # Variáveis usadas para o cálculo do consumo dos aparelhos
     home_coef = 100
     light_coef = 0.04
-    devices_coef = 5
-    return size * home_coef + lights * light_coef + device * devices_coef
+    devices_coef = 5   
+    return size * home_coef + lights * light_coef + device * devices_coef 
 
-# A primeira página
+# Primeira página
 @app.route('/')
 def index():
     return render_template('index.html')
-
-# A segunda página
+# Segunda página
 @app.route('/<size>')
 def lights(size):
     return render_template(
@@ -34,11 +23,11 @@ def lights(size):
                             size=size
                            )
 
-# A terceira página
+# Terceira página
 @app.route('/<size>/<lights>')
 def electronics(size, lights):
     return render_template(
-                            'electronics.html',
+                            'electronics.html',                           
                             size = size, 
                             lights = lights                           
                            )
@@ -52,4 +41,27 @@ def end(size, lights, device):
                                                     int(device)
                                                     )
                         )
+# O formulário
+@app.route('/form')
+def form():
+    return render_template('form.html')
+
+# Resultados do formulário
+@app.route('/submit', methods=['POST'])
+def submit_form():
+    # Declarar variáveis para a coleta dos dados
+    name = request.form['name']
+    email = request.form['email']
+    address = request.form['address']
+    date = request.form['date']
+
+    # Aqui você pode salvar os dados ou enviá-los por email
+    return render_template('form_result.html', 
+                           # Coloque as variáveis aqui
+                           name=name,
+                           email=email,
+                           address=address,
+                           date=date
+                           )
+
 app.run(debug=True)
